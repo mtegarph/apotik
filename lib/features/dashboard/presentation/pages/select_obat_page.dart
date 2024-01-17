@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
+import 'package:supercharged/supercharged.dart';
 
 class SelectObatPage extends StatelessWidget {
   const SelectObatPage({super.key});
@@ -15,6 +16,7 @@ class SelectObatPage extends StatelessWidget {
     final MultiSelectController<ProductEntity> _controller =
         MultiSelectController();
     final List<ValueItem> _selectedOptions = [];
+    final List<String> _selectedOptionsName = [];
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -54,11 +56,14 @@ class SelectObatPage extends StatelessWidget {
                   onOptionSelected: (options) {
                     // debugPrint(options.toString());
                     _selectedOptions.addAll(options);
-
-                    print(_selectedOptions.map((e) => e.label));
+                    _selectedOptions.forEach((e) {
+                      _selectedOptionsName.add(e.label);
+                    });
+                    print(_selectedOptionsName.toJSON());
                   },
                   options: state.product
-                      .map((e) => ValueItem(label: e.title, value: e))
+                      .map((e) =>
+                          ValueItem(label: e.namaObat.toString(), value: e))
                       .toList(),
                   maxItems: 3,
                   selectionType: SelectionType.multi,
@@ -98,7 +103,8 @@ class SelectObatPage extends StatelessWidget {
                     print(_selectedOptions.map((e) => e.label));
                   },
                   options: state.product
-                      .map((e) => ValueItem(label: e.title, value: e))
+                      .map((e) =>
+                          ValueItem(label: e.namaObat.toString(), value: e))
                       .toList(),
                   maxItems: 3,
                   selectionType: SelectionType.multi,

@@ -8,5 +8,6 @@ abstract class DashboardEvent extends Equatable {
 }
 
 class GetProductEvent extends DashboardEvent {
-  const GetProductEvent();
+  final String params;
+  const GetProductEvent(this.params);
 }

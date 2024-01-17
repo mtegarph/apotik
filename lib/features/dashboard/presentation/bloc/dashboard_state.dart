@@ -31,3 +31,4 @@ class DashboardFailed extends DashboardState {
   @override
   List<Object> get props => [message];
 }
+

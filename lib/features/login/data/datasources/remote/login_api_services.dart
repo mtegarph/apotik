@@ -29,9 +29,11 @@ class LoginPostApiImpl extends LoginPostApi {
   @override
   Future postApi(ParameterUpdate parameterUpdate) async {
     final _chuckerHttpClient = ChuckerHttpClient(client);
-    final response = await _chuckerHttpClient.post(
-        Uri.parse("${Urls.baseUrl}/api/users"),
-        body: {'name': parameterUpdate.name, 'job': parameterUpdate.email});
+    final response = await _chuckerHttpClient
+        .post(Uri.parse("${Urls.productBaseUrl}/user/login"), body: {
+      'username': parameterUpdate.name,
+      'password': parameterUpdate.password
+    });
 
     if (response.statusCode == 201) {
       return jsonDecode(response.body);

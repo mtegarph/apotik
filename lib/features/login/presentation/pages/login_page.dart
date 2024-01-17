@@ -91,11 +91,12 @@ class LoginPage extends StatelessWidget {
                       BlocConsumer<PostLoginBloc, PostLoginState>(
                         listener: (context, state) {
                           if (state is LoginPostSuccess) {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const DashboardPage(),
-                                ));
+                            Navigator.pop(context);
+                            // Navigator.pushReplacement(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => const DashboardPage(),
+                            //     ));
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 backgroundColor: Colors.black,
@@ -111,7 +112,7 @@ class LoginPage extends StatelessWidget {
                                   ParameterUpdate parameterUpdate =
                                       ParameterUpdate(
                                           name: email.text,
-                                          email: password.text);
+                                          password: password.text);
                                   context.read<PostLoginBloc>().add(PostLogin(
                                       parameterUpdate: parameterUpdate));
                                 },
@@ -128,19 +129,19 @@ class LoginPage extends StatelessWidget {
                       Gap(
                         MediaQuery.of(context).size.height / 25,
                       ),
-                      Center(
-                        child: Wrap(children: [
-                          Text(
-                            "Tidak Punya Akun?",
-                            style: titleStyleText(),
-                          ),
-                          Text(
-                            "Daftar Disini",
-                            style: titleStyleText()
-                                .copyWith(color: ColorStyle.primaryColor),
-                          ),
-                        ]),
-                      )
+                      // Center(
+                      //   child: Wrap(children: [
+                      //     Text(
+                      //       "Tidak Punya Akun?",
+                      //       style: titleStyleText(),
+                      //     ),
+                      //     Text(
+                      //       "Daftar Disini",
+                      //       style: titleStyleText()
+                      //           .copyWith(color: ColorStyle.primaryColor),
+                      //     ),
+                      //   ]),
+                      // )
                     ],
                   ),
                 ),

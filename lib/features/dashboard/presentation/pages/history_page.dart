@@ -73,17 +73,18 @@ class HistoryProcessPage extends StatelessWidget {
                 runSpacing: 4.0,
                 direction: Axis.horizontal,
                 children: List.generate(
-                  state.product.length - 10,
+                  state.product.length,
                   (index) => Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           card(
-                              context,
-                              state.product[index].title,
-                              state.product[index].stock.toString(),
-                              state.product[index].price.toString(),
-                              state.product[index].thumbnail),
+                            context,
+                            state.product[index].namaObat.toString(),
+                            state.product[index].isiPerkemasan.toString(),
+                            state.product[index].harga.toString(),
+                            'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
+                          ),
                           Divider(
                             color: Colors.grey[400],
                             height: 6,

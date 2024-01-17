@@ -1,18 +1,18 @@
-import 'package:apotik/features/dashboard/domain/entities/product_entity.dart';
+import 'package:apotik/features/dashboard/domain/entities/detail_product_entity.dart';
 
-class ProductModel extends ProductEntity {
+class DetaiObat extends DetaiObatEntity {
   int? nroObat;
   String? merekObat;
   String? namaObat;
   String? jenisObat;
+  String? gejala;
   int? harga;
   String? bentukObat;
   String? isiPerkemasan;
-  String? khasiat;
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  ProductModel({
+  DetaiObat({
     this.nroObat,
     this.merekObat,
     this.namaObat,
@@ -20,30 +20,29 @@ class ProductModel extends ProductEntity {
     this.harga,
     this.bentukObat,
     this.isiPerkemasan,
-    this.khasiat,
     this.createdAt,
     this.updatedAt,
+    this.gejala
   }) : super(
           bentukObat: bentukObat,
           harga: harga,
-          //  idKriteria: idKriteria,
-          isiPerkemasan: isiPerkemasan,
           jenisObat: jenisObat,
           merekObat: merekObat,
           namaObat: namaObat,
           nroObat: nroObat,
-          //totalWeight: totalWeight
+          isiPerkemasan: isiPerkemasan,
+          gejala: gejala
         );
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
+  factory DetaiObat.fromJson(Map<String, dynamic> json) => DetaiObat(
         nroObat: json["NRO_Obat"],
         merekObat: json["merekObat"],
         namaObat: json["namaObat"],
         jenisObat: json["jenisObat"],
         harga: json["harga"],
+        gejala: json["gejala"],
         bentukObat: json["bentukObat"],
         isiPerkemasan: json["isiPerkemasan"],
-        khasiat: json["khasiat"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),
@@ -60,7 +59,6 @@ class ProductModel extends ProductEntity {
         "harga": harga,
         "bentukObat": bentukObat,
         "isiPerkemasan": isiPerkemasan,
-        "khasiat": khasiat,
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
       };

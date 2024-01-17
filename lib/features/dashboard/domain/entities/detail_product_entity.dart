@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class ProductEntity extends Equatable {
+class DetaiObatEntity extends Equatable {
   int? nroObat;
   String? merekObat;
   String? namaObat;
@@ -8,10 +8,11 @@ class ProductEntity extends Equatable {
   int? harga;
   String? bentukObat;
   String? isiPerkemasan;
-  int? idKriteria;
-  double? totalWeight;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  String? gejala;
 
-  ProductEntity({
+  DetaiObatEntity({
     this.nroObat,
     this.merekObat,
     this.namaObat,
@@ -19,10 +20,11 @@ class ProductEntity extends Equatable {
     this.harga,
     this.bentukObat,
     this.isiPerkemasan,
-    this.idKriteria,
-    this.totalWeight,
+    this.createdAt,
+    this.updatedAt,
+    this.gejala
   });
-
+  
   @override
   // TODO: implement props
   List<Object?> get props => throw UnimplementedError();

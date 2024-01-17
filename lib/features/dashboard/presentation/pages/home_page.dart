@@ -1,14 +1,28 @@
-import 'package:apotik/config/theme/app_theme.dart';
-import 'package:apotik/config/theme/app_widget.dart';
-import 'package:apotik/features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'package:apotik/features/dashboard/presentation/pages/select_obat_page.dart';
-import 'package:apotik/features/product/presentation/pages/detail_product.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
+import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:need_resume/need_resume.dart';
+
+import 'package:apotik/config/theme/app_theme.dart';
+import 'package:apotik/config/theme/app_widget.dart';
+import 'package:apotik/dependency_injection.dart';
+import 'package:apotik/features/dashboard/presentation/bloc/bloc/product_search_bloc.dart';
+import 'package:apotik/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:apotik/features/dashboard/presentation/pages/search_product_page.dart';
+import 'package:apotik/features/dashboard/presentation/pages/select_obat_page.dart';
+import 'package:apotik/features/product/presentation/bloc/get_keranjang/get_keranjang_bloc.dart';
+import 'package:apotik/features/product/presentation/bloc/product_bloc.dart';
+import 'package:apotik/features/product/presentation/pages/cart_view.dart';
+import 'package:apotik/features/product/presentation/pages/detail_product.dart';
+
+enum Category { merekObat, khasiat }
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,15 +34,13 @@ class HomePage extends StatefulWidget {
 class HomePageState extends ResumableState<HomePage> {
   @override
   void onReady() {
-    // Implement your code inside here
-
     print('HomeScreen is ready!');
   }
 
   @override
   void onResume() {
     // Implement your code inside here
-
+    context.read<GetKeranjangBloc>().add(GetKeranjang());
     print('HomeScreen is resumed!');
   }
 
@@ -39,212 +51,326 @@ class HomePageState extends ResumableState<HomePage> {
     print('HomeScreen is paused!');
   }
 
+  List<Penyakit> penyakit = [
+    Penyakit(penyakit: "Flu", active: false),
+    Penyakit(penyakit: "Batuk", active: false),
+    Penyakit(penyakit: "Demam", active: false),
+    Penyakit(penyakit: "Pusing", active: false)
+  ];
+  Category? _category = Category.merekObat;
   @override
   Widget build(BuildContext context) {
     TextEditingController searchText = TextEditingController();
 
     final List<String> imgList = [
-      'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
-      'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
-      'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=94a1e718d89ca60a6337a6008341ca50&auto=format&fit=crop&w=1950&q=80',
-      'https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=89719a0d55dd05e2deae4120227e6efc&auto=format&fit=crop&w=1953&q=80',
-      'https://images.unsplash.com/photo-1508704019882-f9cf40e475b4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=8c6e5e3aba713b17aa1fe71ab4f0ae5b&auto=format&fit=crop&w=1352&q=80',
-      'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
+      'https://www.k24klik.com/blog/wp-content/uploads/2019/03/PROMO-DISKON-copy.jpg',
+      'https://promo.nos.jkt-1.neo.id/347568.jpg',
+      'https://img.ws.mms.shopee.co.id/id-11134210-7qul4-lk64v5ib7q0v43',
     ];
-    return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: Text(
-      //     "ApotikQU",
-      //     style: headlineStyleText(),
-      //   ),
-      // ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              fit: StackFit.loose,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 2.5,
-                  decoration: BoxDecoration(color: ColorStyle.primaryColor),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Gap(MediaQuery.of(context).size.height / 15),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1699287311~exp=1699287911~hmac=1c6639970625e2ee21955b2362408a38c124110dac65e5604aabc93a2b5fb2e1"),
-                            ),
-                            Text(
-                              "Hello, User",
-                              style: titleStyleText(),
-                            ),
-                            Gap(MediaQuery.of(context).size.width / 2.5),
-                            const CircleAvatar(
-                              radius: 15,
-                              child: Icon(
-                                Icons.notifications,
-                                size: 15,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Gap(MediaQuery.of(context).size.height / 24),
-                      Center(child: searchBar(context, searchText)),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height / 3 - 90,
-                  left: 0,
-                  right: 0,
-                  child: CarouselSlider(
-                    items: imgList
-                        .map((e) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(e)),
-                              ),
-                            ))
-                        .toList(),
-                    options: CarouselOptions(
-                      // padEnds: true,
-                      //height: 150,
-                      aspectRatio: 16 / 9,
-                      padEnds: true,
-                      viewportFraction: 0.7,
-                      animateToClosest: true,
-                      pageSnapping: true,
-                    ),
-                  ),
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height / 2,
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Container(
+              //     width: double.infinity,
+              //     child: Align(
+              //       alignment: Alignment.centerRight,
+              //       child: TextButton(
+              //           onPressed: () {
+              //             push(
+              //                 context,
+              //                 MaterialPageRoute(
+              //                     builder: (context) => const LoginPage()));
+              //           },
+              //           child: const Text(
+              //             "Login",
+              //             style: TextStyle(color: Colors.blue),
+              //           )),
+              //     )),
+              Stack(
+                fit: StackFit.loose,
                 children: [
-                  Text(
-                    "Kategori",
-                    style: titleStyleText(),
-                  ),
-                  const Gap(10),
-                  SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: index == 0
-                            ? GestureDetector(
+                  Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height / 2,
+                    decoration: BoxDecoration(color: ColorStyle.primaryColor),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Gap(MediaQuery.of(context).size.height / 15),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
                                 onTap: () {
                                   push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SelectObatPage()));
+                                          builder: (context) => const LoginPage()));
                                 },
-                                child: const ChoiceChip(
-                                    label: Text("Paracetamol"), selected: true),
-                              )
-                            : const ChoiceChip(
-                                label: Text("Paracetamol"), selected: false),
-                      ),
-                    ),
-                  ),
-                  const Gap(10),
-                  titleCard("Rekomendasi Untukmu", "Liha Semua"),
-                  BlocBuilder<DashboardBloc, DashboardState>(
-                    builder: (context, state) {
-                      if (state is DasboardLoading) {
-                        return const Center(
-                          child: CupertinoActivityIndicator(),
-                        );
-                      }
-                      if (state is DashboardSuccess) {
-                        return Wrap(
-                            spacing: 8.0, // gap between adjacent chips
-                            runSpacing: 4.0,
-                            direction: Axis.horizontal,
-                            children: List.generate(
-                              state.product.length - 10,
-                              (index) => Padding(
-                                padding: const EdgeInsets.all(17.0),
-                                child: Hero(
-                                  tag: 'product$index',
-                                  child: GestureDetector(
-                                    onTap: () => push(
-                                        context,
-                                        MaterialPageRoute(
+                                child: const Text(
+                                  "Login",
+                                  style: TextStyle(color: Colors.black),
+                                )),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1699287311~exp=1699287911~hmac=1c6639970625e2ee21955b2362408a38c124110dac65e5604aabc93a2b5fb2e1"),
+                              ),
+                              Text(
+                                "Hello, User",
+                                style: titleStyleText(),
+                              ),
+                              Gap(MediaQuery.of(context).size.width / 2.5),
+                              GestureDetector(
+                                onTap: () {
+                                  context
+                                      .read<GetKeranjangBloc>()
+                                      .add(GetKeranjang());
+                                  push(
+                                      context,
+                                      MaterialPageRoute(
                                           builder: (context) =>
-                                              DetailProductPage(
-                                                  index: index,
-                                                  productEntity:
-                                                      state.product[index]),
-                                        )),
-                                    child: card(
-                                        state.product[index].thumbnail,
-                                        state.product[index].description,
-                                        state.product[index].price.toString(),
-                                        () {}),
+                                              const CartView()));
+                                },
+                                child: const CircleAvatar(
+                                  radius: 15,
+                                  child: Icon(
+                                    Icons.shopping_cart,
+                                    size: 15,
                                   ),
                                 ),
                               ),
-                            ));
-                      }
-                      if (state is DashboardFailed) {
-                        return Center(
-                          child: Text(state.message.toString()),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                  const Gap(10),
-                  titleCard("Terlaris Bulan Ini", "Liha Semua"),
-                  Wrap(
-                      spacing: 8.0, // gap between adjacent chips
-                      runSpacing: 4.0,
-                      direction: Axis.horizontal,
-                      children: List.generate(
-                        8,
-                        (index) => Padding(
-                          padding: const EdgeInsets.all(17.0),
-                          child: card(
-                              "https://images.k24klik.com/product/0104k0131.jpg",
-                              "Paracetamol",
-                              "Rp. 10.000",
-                              () {}),
+                              const CircleAvatar(
+                                radius: 15,
+                                child: Icon(
+                                  Icons.notifications,
+                                  size: 15,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      )),
+                        Gap(MediaQuery.of(context).size.height / 24),
+                        Center(
+                            child: searchBar(
+                          context,
+                          searchText,
+                          (p0) {
+                            context.read<ProductSearchBloc>().add(ProductSearch(
+                                keyword: p0, searchBy: _category.toString()));
+                            push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SearchProductPage()));
+                          },
+                        )),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: RadioListTile<Category>(
+                                title: const Text("Obat"),
+                                value: Category.merekObat,
+                                groupValue: _category,
+                                onChanged: (Category? value) {
+                                  setState(() {
+                                    _category = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                            Expanded(
+                              child: RadioListTile<Category>(
+                                title: const Text("Penyakit"),
+                                value: Category.khasiat,
+                                groupValue: _category,
+                                onChanged: (Category? value) {
+                                  setState(() {
+                                    _category = value!;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height / 3 - 80 + 40,
+                    left: 0,
+                    right: 0,
+                    child: SizedBox(
+                      height: 200,
+                      child: CarouselSlider(
+                        items: imgList
+                            .map((e) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(e)),
+                                  ),
+                                ))
+                            .toList(),
+                        options: CarouselOptions(
+                          aspectRatio: 16 / 9,
+                          padEnds: true,
+                          autoPlay: true,
+                          viewportFraction: 0.7,
+                          animateToClosest: true,
+                          pageSnapping: true,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height / 2,
+                  ),
                 ],
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Kategori",
+                      style: titleStyleText(),
+                    ),
+                    const Gap(10),
+                    SizedBox(
+                      height: 50,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: penyakit.length,
+                        itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              if (penyakit[index].active == true) {
+                                setState(() {
+                                  penyakit[index].active = false;
+                                });
+                              }
+                              setState(() {
+                                penyakit[index].active = true;
+                                context.read<DashboardBloc>().add(GetProductEvent(
+                                    "/obat/khasiat/${penyakit[index].penyakit}"));
+                              });
+                            },
+                            child: ChoiceChip(
+                                label: Text(penyakit[index].penyakit),
+                                selected: penyakit[index].active),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Gap(10),
+                    titleCard("Rekomendasi Untukmu", "Liha Semua"),
+                    BlocBuilder<DashboardBloc, DashboardState>(
+                      builder: (context, state) {
+                        if (state is DasboardLoading) {
+                          return const Center(
+                            child: CupertinoActivityIndicator(),
+                          );
+                        }
+                        if (state is DashboardSuccess) {
+                          return Wrap(
+                              spacing: 50.0,
+                              runSpacing: 4.0,
+                              direction: Axis.horizontal,
+                              children: List.generate(
+                                state.product.length,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.all(17.0),
+                                  child: Hero(
+                                    tag: 'product$index',
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  DetailProductPage(
+                                                      idObat: state
+                                                          .product[index]
+                                                          .nroObat!,
+                                                      index: index,
+                                                      productEntity:
+                                                          state.product[index]),
+                                            ));
+                                      },
+                                      child: card(
+                                          'https://images.k24klik.com/product/0104k0131.jpg',
+                                          state.product[index].merekObat
+                                              .toString(),
+                                          state.product[index].harga.toString(),
+                                          () {}),
+                                    ),
+                                  ),
+                                ),
+                              ));
+                        }
+                        if (state is DashboardFailed) {
+                          return Center(
+                            child: Text(state.message.toString()),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                    const Gap(10),
+                    // titleCard("Terlaris Bulan Ini", "Liha Semua"),
+                    // Wrap(
+                    //     spacing: 8.0, // gap between adjacent chips
+                    //     runSpacing: 4.0,
+                    //     direction: Axis.horizontal,
+                    //     children: List.generate(
+                    //       8,
+                    //       (index) => Padding(
+                    //         padding: const EdgeInsets.all(17.0),
+                    //         child: card(
+                    //             "https://images.k24klik.com/product/0104k0131.jpg",
+                    //             "Paracetamol",
+                    //             "Rp. 10.000",
+                    //             () {}),
+                    //       ),
+                    //     )),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+class Penyakit {
+  String penyakit;
+  bool active;
+  Penyakit({
+    required this.penyakit,
+    required this.active,
+  });
+}
+
 Widget searchBar(
-    BuildContext context, TextEditingController textEditingController) {
+    BuildContext context,
+    TextEditingController textEditingController,
+    Function(String)? onSubmitted) {
   return Container(
     width: MediaQuery.of(context).size.width / 1.05,
     height: MediaQuery.of(context).size.height / 16,
@@ -269,6 +395,7 @@ Widget searchBar(
                   border: InputBorder.none,
                   hintText: "Silahkan Cari Obat Disini",
                   hintStyle: titleStyleText().copyWith(fontSize: 12)),
+              onSubmitted: onSubmitted,
             ),
           ),
         ),
@@ -280,7 +407,7 @@ Widget searchBar(
 Widget card(String image, String title, String price, VoidCallback onTap) {
   return Container(
     width: 150,
-    height: 350,
+    height: 250,
     decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -300,7 +427,7 @@ Widget card(String image, String title, String price, VoidCallback onTap) {
         const Gap(14),
         SizedBox(
           width: double.maxFinite,
-          height: 150,
+          height: 50,
           child: Text(
             title,
             style: titleStyleText(),
