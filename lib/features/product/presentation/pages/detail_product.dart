@@ -1,6 +1,7 @@
 import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/config/theme/app_widget.dart';
 import 'package:apotik/config/widgets/custom_rating_bar.dart';
+import 'package:apotik/core/constant/constant.dart';
 import 'package:apotik/core/utils/size_utils.dart';
 import 'package:apotik/dependency_injection.dart';
 import 'package:apotik/features/dashboard/domain/entities/product_entity.dart';
@@ -28,6 +29,7 @@ class DetailProductPage extends StatefulWidget {
 }
 
 class _DetailProductPageState extends State<DetailProductPage> {
+  int total = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -51,8 +53,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                   tag: 'product${widget.index}',
                   child: CachedNetworkImage(
                     height: MediaQuery.of(context).size.height / 2,
-                    imageUrl:
-                        'https://images.k24klik.com/product/0104k0131.jpg',
+                    imageUrl: '${Urls.productBaseUrl}/${state.product.gambar}',
                     placeholder: (context, url) =>
                         const CircularProgressIndicator(),
                     errorWidget: (context, url, error) =>
@@ -106,9 +107,8 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                    state.product.merekObat
-                                                        .toString(),
-                                                    style: headlineStyleText()),
+                                                    "${state.product.merekObat.toString()} ${state.product.isiPerkemasan}",
+                                                    style: headlineStyleText().copyWith(fontSize: 17)),
                                                 SizedBox(height: 3.v),
                                                 Row(children: [
                                                   CustomRatingBar(
@@ -124,51 +124,121 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                                 ])
                                               ]),
                                           const Spacer(),
-                                          Container(
-                                              margin: EdgeInsets.only(
-                                                  top: 8.v, bottom: 10.v),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 8.h,
-                                                  vertical: 1.v),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 1.h,
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                total == 0
+                                                    ? total = 0
+                                                    : total = total - 1;
+                                              });
+                                            },
+                                            child: Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 8.v, bottom: 10.v),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.h,
+                                                    vertical: 1.v),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 1.h,
+                                                  ),
                                                 ),
-                                              ),
-                                              child: Text("-",
-                                                  style: titleStyleText())),
+                                                child: Text("-",
+                                                    style: titleStyleText())),
+                                          ),
                                           Padding(
                                               padding: EdgeInsets.only(
                                                   left: 10.h,
                                                   top: 9.v,
                                                   bottom: 10.v),
-                                              child: Text("14 Items",
+                                              child: Text("$total Items",
                                                   style: titleStyleText())),
-                                          Container(
-                                              margin: EdgeInsets.only(
-                                                  left: 10.h,
-                                                  top: 8.v,
-                                                  bottom: 10.v),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 8.h,
-                                                  vertical: 1.v),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                border: Border.all(
-                                                  color: Colors.black,
-                                                  width: 1.h,
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                total = total + 1;
+                                              });
+                                            },
+                                            child: Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 10.h,
+                                                    top: 8.v,
+                                                    bottom: 10.v),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.h,
+                                                    vertical: 1.v),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 1.h,
+                                                  ),
                                                 ),
-                                              ),
-                                              child: Text("+",
-                                                  style: titleStyleText()))
+                                                child: Text("+",
+                                                    style: titleStyleText())),
+                                          )
                                         ]),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(18.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0, vertical: 5),
+                                    child: Text(
+                                      "Deskripsi",
+                                      softWrap: true,
+                                      textAlign: TextAlign.justify,
+                                      style: titleStyleText().copyWith(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0),
+                                    child: Text(
+                                      state.product.deskripsiObat.toString(),
+                                      softWrap: true,
+                                      textAlign: TextAlign.justify,
+                                      style: titleStyleText(),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0, vertical: 5),
+                                    child: Text(
+                                      "Stok",
+                                      softWrap: true,
+                                      textAlign: TextAlign.justify,
+                                      style: titleStyleText().copyWith(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0),
+                                    child: Text(
+                                      state.product.stok.toString(),
+                                      softWrap: true,
+                                      textAlign: TextAlign.justify,
+                                      style: titleStyleText(),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0, vertical: 5),
+                                    child: Text(
+                                      "Khasiat",
+                                      softWrap: true,
+                                      textAlign: TextAlign.justify,
+                                      style: titleStyleText().copyWith(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0),
                                     child: Text(
                                       "Dapat Menyembuhkan ${state.product.gejala.toString()}",
                                       softWrap: true,
@@ -195,48 +265,59 @@ class _DetailProductPageState extends State<DetailProductPage> {
     );
   }
 
-  Widget bottomNavigationBar() => SizedBox(
-        height: 90,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 18.0, right: 18, top: 15),
-                  child: Text(
-                    "Harga",
-                    softWrap: true,
-                    textAlign: TextAlign.justify,
-                    style: titleStyleText(),
+  Widget bottomNavigationBar() => BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, stateProduct) {
+          if (stateProduct is ObatDetailSuccess) {
+            return SizedBox(
+              height: 90,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 18.0, right: 18, top: 15),
+                        child: Text(
+                          "Harga",
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          style: titleStyleText(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                        child: Text(
+                          "Rp ${stateProduct.product.harga.toString()}",
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          style: titleStyleText(),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0, right: 18),
+                        child: Text(
+                          "Per Strip",
+                          softWrap: true,
+                          textAlign: TextAlign.justify,
+                          style: titleStyleText()
+                              .copyWith(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: Text(
-                    "Rp 15.000",
-                    softWrap: true,
-                    textAlign: TextAlign.justify,
-                    style: titleStyleText(),
-                  ),
-                ),
-              ],
-            ),
-            BlocConsumer<KeranjangBloc, KeranjangState>(
-              listener: (context, state) {
-                if (state is AddKeranjangSuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('Obat Berhasilar Dalam Keranjang'),
-                  ));
-                  Navigator.pop(context);
-                }
-              },
-              builder: (context, state) {
-                return BlocBuilder<ProductBloc, ProductState>(
-                  builder: (context, stateProduct) {
-                    if (stateProduct is ObatDetailSuccess) {
+                  BlocConsumer<KeranjangBloc, KeranjangState>(
+                    listener: (context, state) {
+                      if (state is AddKeranjangSuccess) {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text('Obat Berhasilar Dalam Keranjang'),
+                        ));
+                        Navigator.pop(context);
+                      }
+                    },
+                    builder: (context, state) {
                       return Container(
                         margin: const EdgeInsets.only(right: 20),
                         width: 150,
@@ -246,7 +327,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                               DetaiObatKeranjangEntity
                                   detaiObatKeranjangEntity =
                                   DetaiObatKeranjangEntity(
-                                      stok: 1,
+                                      stok: total,
                                       gejala: stateProduct.product.gejala,
                                       harga: stateProduct.product.harga,
                                       jenisObat: stateProduct.product.jenisObat,
@@ -263,13 +344,13 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                   .copyWith(color: Colors.white),
                             )),
                       );
-                    }
-                    return const SizedBox.shrink();
-                  },
-                );
-              },
-            ),
-          ],
-        ),
+                    },
+                  ),
+                ],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       );
 }

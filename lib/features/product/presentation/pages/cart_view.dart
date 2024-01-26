@@ -1,98 +1,204 @@
 import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/config/theme/app_widget.dart';
+import 'package:apotik/core/utils/size_utils.dart';
 import 'package:apotik/features/product/data/datasources/local/hive_data.dart';
 import 'package:apotik/features/product/domain/entities/detail_product_keranjang_entity.dart';
+import 'package:apotik/features/product/presentation/bloc/bloc/keranjang_bloc.dart';
 import 'package:apotik/features/product/presentation/bloc/get_keranjang/get_keranjang_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:http/http.dart';
+import 'package:supercharged/supercharged.dart';
 
 class CartView extends StatelessWidget {
   const CartView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GetKeranjangBloc, GetKeranjangState>(
-      builder: (context, state) {
-        if (state is GetKeranjangLoading) {
-          return const CupertinoActivityIndicator();
-        }
-        if (state is GetKeranjangFailed) {
-          return Center(
-            child: Text(state.message),
-          );
-        }
-        if (state is GetKeranjangSuccess && state.item.isNotEmpty) {
-          print(state.item.length);
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                "Keranjang Beli",
-                style: headlineStyleText(),
-              ),
-            ),
-            bottomNavigationBar: SizedBox(
-              height: 70,
-              child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: CustomButton(
-                      function: () {},
-                      child: Text(
-                        "Beli",
-                        style:
-                            headlineStyleText().copyWith(color: Colors.white),
-                      ))),
-            ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: state.item.length,
-                      itemBuilder: (context, index) {
-                        final item = state.item[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Stack(
-                            children: [
-                              CardObat(
-                                item: item,
-                              ),
-                              Positioned(
+    return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(color: "4D4D4D".toColor()),
+          title: Text(
+            "Keranjang Beli",
+            style: headlineStyleText(),
+          ),
+        ),
+        bottomNavigationBar: SizedBox(
+          height: 70,
+          child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: CustomButton(
+                  function: () {},
+                  child: Text(
+                    "Bayar",
+                    style: headlineStyleText().copyWith(color: Colors.white),
+                  ))),
+        ),
+        body: BlocBuilder<GetKeranjangBloc, GetKeranjangState>(
+          builder: (context, state) {
+            if (state is GetKeranjangLoading) {
+              return const CupertinoActivityIndicator();
+            }
+            if (state is GetKeranjangFailed) {
+              return Center(
+                child: Text(state.message),
+              );
+            }
+            if (state is GetKeranjangSuccess && state.item.isNotEmpty) {
+              print(state.item.length);
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: state.item.length,
+                        itemBuilder: (context, index) {
+                          final item = state.item[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Stack(
+                              children: [
+                                CardObat(
+                                  item: item,
+                                ),
+                                Positioned(
+                                    right: 0,
+                                    top: 0,
+                                    child: IconButton(
+                                        onPressed: () async {
+                                          await HiveData()
+                                              .deleteSurveyByNmrObat(item);
+                                          context
+                                              .read<GetKeranjangBloc>()
+                                              .add(GetKeranjang());
+                                        },
+                                        icon: const Icon(Icons.close))),
+                                Positioned(
                                   right: 0,
-                                  top: 0,
-                                  child: IconButton(
-                                      onPressed: () async {
-                                        await HiveData()
-                                            .deleteSurveyByNmrObat(item);
-                                        context
-                                            .read<GetKeranjangBloc>()
-                                            .add(GetKeranjang());
-                                      },
-                                      icon: const Icon(Icons.close)))
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    CarDetail(
-                      total: state.item
-                          .map((e) => e.harga!)
-                          .reduce((value, element) => value + element),
-                    )
-                  ],
+                                  bottom: 0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0, vertical: 10),
+                                    child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () async {
+                                              DetaiObatKeranjangEntity
+                                                  detaiObatKeranjangEntity =
+                                                  DetaiObatKeranjangEntity(
+                                                      stok: item.stok == 0
+                                                          ? 0
+                                                          : item.stok! - 1,
+                                                      gejala: item.gejala,
+                                                      harga: item.harga,
+                                                      jenisObat: item.jenisObat,
+                                                      merekObat: item.merekObat,
+                                                      namaObat: item.namaObat,
+                                                      nroObat: item.nroObat);
+                                              item.stok == 0
+                                                  ? await HiveData()
+                                                      .deleteSurveyByNmrObat(
+                                                          item)
+                                                  : context
+                                                      .read<KeranjangBloc>()
+                                                      .add(AddKeranjang(
+                                                          detaiObatKeranjangEntity:
+                                                              detaiObatKeranjangEntity));
+                                              context
+                                                  .read<GetKeranjangBloc>()
+                                                  .add(GetKeranjang());
+                                            },
+                                            child: Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 8.v, bottom: 10.v),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.h,
+                                                    vertical: 1.v),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 1.h,
+                                                  ),
+                                                ),
+                                                child: Text("-",
+                                                    style: titleStyleText())),
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 10.h,
+                                                  top: 9.v,
+                                                  bottom: 10.v),
+                                              child: Text("${item.stok} Items",
+                                                  style: titleStyleText())),
+                                          GestureDetector(
+                                            onTap: () {
+                                              DetaiObatKeranjangEntity
+                                                  detaiObatKeranjangEntity =
+                                                  DetaiObatKeranjangEntity(
+                                                      stok: item.stok! + 1,
+                                                      gejala: item.gejala,
+                                                      harga: item.harga,
+                                                      jenisObat: item.jenisObat,
+                                                      merekObat: item.merekObat,
+                                                      namaObat: item.namaObat,
+                                                      nroObat: item.nroObat);
+                                              context.read<KeranjangBloc>().add(
+                                                  AddKeranjang(
+                                                      detaiObatKeranjangEntity:
+                                                          detaiObatKeranjangEntity));
+                                              context
+                                                  .read<GetKeranjangBloc>()
+                                                  .add(GetKeranjang());
+                                            },
+                                            child: Container(
+                                                margin: EdgeInsets.only(
+                                                    left: 10.h,
+                                                    top: 8.v,
+                                                    bottom: 10.v),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.h,
+                                                    vertical: 1.v),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  border: Border.all(
+                                                    color: Colors.black,
+                                                    width: 1.h,
+                                                  ),
+                                                ),
+                                                child: Text("+",
+                                                    style: titleStyleText())),
+                                          )
+                                        ]),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      CarDetail(
+                        total: state.item
+                            .map((e) => e.harga! * (e.stok ?? 0))
+                            .reduce((value, element) => value + element),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        }
-        return const SizedBox.shrink();
-      },
-    );
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ));
   }
 }
 
@@ -176,7 +282,7 @@ class CarDetail extends StatelessWidget {
                   color: Colors.grey[300]!)
             ]),
         width: double.infinity,
-        height: 200,
+        height: 220,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -205,13 +311,20 @@ class CarDetail extends StatelessWidget {
                   children: [Text("PPN"), Text("10%")],
                 ),
               ),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text("Ongkir"), Text("5000")],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Total"),
-                    Text(((total * 0.10) + total).toString())
+                    Text(((total * 0.10) + total + 5000).toString())
                   ],
                 ),
               )

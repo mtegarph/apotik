@@ -6,6 +6,8 @@ class ProductEntity extends Equatable {
   String? namaObat;
   String? jenisObat;
   int? harga;
+  String? gambar;
+  String? deskripsiObat;
   String? bentukObat;
   String? isiPerkemasan;
   int? idKriteria;
@@ -21,6 +23,8 @@ class ProductEntity extends Equatable {
     this.isiPerkemasan,
     this.idKriteria,
     this.totalWeight,
+    this.gambar,
+    this.deskripsiObat
   });
 
   @override

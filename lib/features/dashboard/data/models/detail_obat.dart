@@ -11,28 +11,36 @@ class DetaiObat extends DetaiObatEntity {
   String? isiPerkemasan;
   DateTime? createdAt;
   DateTime? updatedAt;
+  String? gambar;
+  String? deskripsiObat;
+  int? stok;
 
-  DetaiObat({
-    this.nroObat,
-    this.merekObat,
-    this.namaObat,
-    this.jenisObat,
-    this.harga,
-    this.bentukObat,
-    this.isiPerkemasan,
-    this.createdAt,
-    this.updatedAt,
-    this.gejala
-  }) : super(
-          bentukObat: bentukObat,
-          harga: harga,
-          jenisObat: jenisObat,
-          merekObat: merekObat,
-          namaObat: namaObat,
-          nroObat: nroObat,
-          isiPerkemasan: isiPerkemasan,
-          gejala: gejala
-        );
+  DetaiObat(
+      {this.nroObat,
+      this.merekObat,
+      this.namaObat,
+      this.jenisObat,
+      this.harga,
+      this.bentukObat,
+      this.isiPerkemasan,
+      this.createdAt,
+      this.updatedAt,
+      this.gambar,
+      this.deskripsiObat,
+      this.stok,
+      this.gejala})
+      : super(
+            bentukObat: bentukObat,
+            harga: harga,
+            jenisObat: jenisObat,
+            merekObat: merekObat,
+            namaObat: namaObat,
+            nroObat: nroObat,
+            isiPerkemasan: isiPerkemasan,
+            gejala: gejala,
+            gambar: gambar,
+            stok: stok,
+            deskripsiObat: deskripsiObat);
 
   factory DetaiObat.fromJson(Map<String, dynamic> json) => DetaiObat(
         nroObat: json["NRO_Obat"],
@@ -40,9 +48,12 @@ class DetaiObat extends DetaiObatEntity {
         namaObat: json["namaObat"],
         jenisObat: json["jenisObat"],
         harga: json["harga"],
-        gejala: json["gejala"],
+        gejala: json["khasiat"],
         bentukObat: json["bentukObat"],
         isiPerkemasan: json["isiPerkemasan"],
+        deskripsiObat: json["deskripsiObat"],
+        gambar: json["gambar"],
+        stok: json["stok"],
         createdAt: json["createdAt"] == null
             ? null
             : DateTime.parse(json["createdAt"]),

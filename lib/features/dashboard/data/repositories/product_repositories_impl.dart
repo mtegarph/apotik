@@ -45,6 +45,8 @@ class ProductRepositoryImpl implements ProductRepository {
     // TODO: implement getProductSearch
     try {
       final result = await producApiService.getProductSearch(keyword, searchBy);
+      print("keyword $keyword");
+      print("searchbya $searchBy");
       return Right(result);
     } on ServerException {
       return const Left(ServerFailure("An Error Has Occured"));

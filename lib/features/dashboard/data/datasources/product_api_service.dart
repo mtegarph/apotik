@@ -55,10 +55,10 @@ class ProducApiServiceImpl extends ProducApiService {
   Future<List<ProductModel>> getProductSearch(
       String keyword, String searchBy) async {
     List<ProductModel> products = [];
-    final _chuckerResponse = ChuckerHttpClient(client);
-    final response = await _chuckerResponse.post(
-        Uri.parse('${Urls.productBaseUrl}/obat/search'),
-        body: {"keyword": keyword, "searchby": searchBy});
+    final chuckerResponse = ChuckerHttpClient(client);
+    final response = await chuckerResponse.post(
+        Uri.parse('${Urls.productBaseUrl}/obat/search/'),
+        body: {"kataKunci": keyword, "searchBy": searchBy});
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
       for (final item in jsonResponse) {

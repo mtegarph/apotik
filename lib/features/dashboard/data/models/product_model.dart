@@ -11,29 +11,34 @@ class ProductModel extends ProductEntity {
   String? khasiat;
   DateTime? createdAt;
   DateTime? updatedAt;
-
-  ProductModel({
-    this.nroObat,
-    this.merekObat,
-    this.namaObat,
-    this.jenisObat,
-    this.harga,
-    this.bentukObat,
-    this.isiPerkemasan,
-    this.khasiat,
-    this.createdAt,
-    this.updatedAt,
-  }) : super(
-          bentukObat: bentukObat,
-          harga: harga,
-          //  idKriteria: idKriteria,
-          isiPerkemasan: isiPerkemasan,
-          jenisObat: jenisObat,
-          merekObat: merekObat,
-          namaObat: namaObat,
-          nroObat: nroObat,
-          //totalWeight: totalWeight
-        );
+  String? gambar;
+  String? deskripsiObat;
+  ProductModel(
+      {this.nroObat,
+      this.merekObat,
+      this.namaObat,
+      this.jenisObat,
+      this.harga,
+      this.bentukObat,
+      this.isiPerkemasan,
+      this.khasiat,
+      this.createdAt,
+      this.updatedAt,
+      this.deskripsiObat,
+      this.gambar})
+      : super(
+            bentukObat: bentukObat,
+            harga: harga,
+            //  idKriteria: idKriteria,
+            isiPerkemasan: isiPerkemasan,
+            jenisObat: jenisObat,
+            merekObat: merekObat,
+            namaObat: namaObat,
+            nroObat: nroObat,
+            gambar: gambar,
+            deskripsiObat: deskripsiObat
+            //totalWeight: totalWeight
+            );
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         nroObat: json["NRO_Obat"],
@@ -42,6 +47,8 @@ class ProductModel extends ProductEntity {
         jenisObat: json["jenisObat"],
         harga: json["harga"],
         bentukObat: json["bentukObat"],
+        deskripsiObat: json["deskripsiObat"],
+        gambar: json["gambar"],
         isiPerkemasan: json["isiPerkemasan"],
         khasiat: json["khasiat"],
         createdAt: json["createdAt"] == null

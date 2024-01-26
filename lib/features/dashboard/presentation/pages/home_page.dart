@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:apotik/core/constant/constant.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
 import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
+import 'package:hive/hive.dart';
 import 'package:need_resume/need_resume.dart';
 
 import 'package:apotik/config/theme/app_theme.dart';
@@ -94,29 +98,30 @@ class HomePageState extends ResumableState<HomePage> {
                 children: [
                   Container(
                     width: double.infinity,
-                    height: MediaQuery.of(context).size.height / 2,
+                    height: MediaQuery.of(context).size.height / 2.5,
                     decoration: BoxDecoration(color: ColorStyle.primaryColor),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Gap(MediaQuery.of(context).size.height / 15),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: GestureDetector(
-                                onTap: () {
-                                  push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => const LoginPage()));
-                                },
-                                child: const Text(
-                                  "Login",
-                                  style: TextStyle(color: Colors.black),
-                                )),
-                          ),
-                        ),
+                        Gap(MediaQuery.of(context).size.height / 50),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                        //   child: Align(
+                        //     alignment: Alignment.centerRight,
+                        //     child: GestureDetector(
+                        //         onTap: () {
+                        //           push(
+                        //               context,
+                        //               MaterialPageRoute(
+                        //                   builder: (context) =>
+                        //                       const LoginPage()));
+                        //         },
+                        //         child: const Text(
+                        //           "Login",
+                        //           style: TextStyle(color: Colors.black),
+                        //         )),
+                        //   ),
+                        // ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 28.0),
                           child: Row(
@@ -126,11 +131,27 @@ class HomePageState extends ResumableState<HomePage> {
                                 backgroundImage: NetworkImage(
                                     "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1699287311~exp=1699287911~hmac=1c6639970625e2ee21955b2362408a38c124110dac65e5604aabc93a2b5fb2e1"),
                               ),
-                              Text(
-                                "Hello, User",
-                                style: titleStyleText(),
-                              ),
-                              Gap(MediaQuery.of(context).size.width / 2.5),
+                              const Gap(10),
+                              FutureBuilder(
+                                  future:
+                                      GetIt.instance<LocalLogin>().getNama(),
+                                  builder: (context, snapshot) {
+                                    return snapshot.data == "null"
+                                        ? Text(
+                                            "Hello, User",
+                                            style: titleStyleText(),
+                                          )
+                                        : SizedBox(
+                                          width: 130,
+                                          child: Text(
+                                              "Hello, ${snapshot.data}",
+                                              style: titleStyleText(),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                            ),
+                                        );
+                                  }),
+                              Gap(MediaQuery.of(context).size.width / 4.5),
                               GestureDetector(
                                 onTap: () {
                                   context
@@ -150,11 +171,21 @@ class HomePageState extends ResumableState<HomePage> {
                                   ),
                                 ),
                               ),
-                              const CircleAvatar(
-                                radius: 15,
-                                child: Icon(
-                                  Icons.notifications,
-                                  size: 15,
+                              const Gap(8),
+                              GestureDetector(
+                                onTap: () {
+                                  push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage()));
+                                },
+                                child: const CircleAvatar(
+                                  radius: 15,
+                                  child: Icon(
+                                    Icons.login,
+                                    size: 15,
+                                  ),
                                 ),
                               ),
                             ],
@@ -162,52 +193,52 @@ class HomePageState extends ResumableState<HomePage> {
                         ),
                         Gap(MediaQuery.of(context).size.height / 24),
                         Center(
-                            child: searchBar(
-                          context,
-                          searchText,
-                          (p0) {
-                            context.read<ProductSearchBloc>().add(ProductSearch(
-                                keyword: p0, searchBy: _category.toString()));
-                            push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SearchProductPage()));
-                          },
-                        )),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: RadioListTile<Category>(
-                                title: const Text("Obat"),
-                                value: Category.merekObat,
-                                groupValue: _category,
-                                onChanged: (Category? value) {
-                                  setState(() {
-                                    _category = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                            Expanded(
-                              child: RadioListTile<Category>(
-                                title: const Text("Penyakit"),
-                                value: Category.khasiat,
-                                groupValue: _category,
-                                onChanged: (Category? value) {
-                                  setState(() {
-                                    _category = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        )
+                            child: searchBar(context, searchText, (p0) {
+                          context.read<ProductSearchBloc>().add(ProductSearch(
+                              keyword: p0,
+                              searchBy: _category.toString().split('.').last));
+                          push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SearchProductPage()));
+                        },
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: RadioListTile<Category>(
+                                        activeColor: ColorStyle.primaryColor,
+                                        title: const Text("Obat"),
+                                        value: Category.merekObat,
+                                        groupValue: _category,
+                                        onChanged: (Category? value) {
+                                          print(value);
+                                          setState(() {
+                                            _category = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: RadioListTile<Category>(
+                                        activeColor: ColorStyle.primaryColor,
+                                        title: const Text("Penyakit"),
+                                        value: Category.khasiat,
+                                        groupValue: _category,
+                                        onChanged: (Category? value) {
+                                          setState(() {
+                                            _category = value!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ))),
                       ],
                     ),
                   ),
                   Positioned(
-                    top: MediaQuery.of(context).size.height / 3 - 80 + 40,
+                    top: MediaQuery.of(context).size.height / 3 - 80,
                     left: 0,
                     right: 0,
                     child: SizedBox(
@@ -235,7 +266,7 @@ class HomePageState extends ResumableState<HomePage> {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height / 2,
+                    height: MediaQuery.of(context).size.height / 2.1,
                   ),
                 ],
               ),
@@ -277,7 +308,7 @@ class HomePageState extends ResumableState<HomePage> {
                       ),
                     ),
                     const Gap(10),
-                    titleCard("Rekomendasi Untukmu", "Liha Semua"),
+                    titleCard("Rekomendasi Untukmu", "Lihat Semua"),
                     BlocBuilder<DashboardBloc, DashboardState>(
                       builder: (context, state) {
                         if (state is DasboardLoading) {
@@ -286,15 +317,15 @@ class HomePageState extends ResumableState<HomePage> {
                           );
                         }
                         if (state is DashboardSuccess) {
-                          return Wrap(
-                              spacing: 50.0,
-                              runSpacing: 4.0,
-                              direction: Axis.horizontal,
-                              children: List.generate(
-                                state.product.length,
-                                (index) => Padding(
-                                  padding: const EdgeInsets.all(17.0),
-                                  child: Hero(
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: Wrap(
+                                spacing: 50.0,
+                                runSpacing: 20.0,
+                                direction: Axis.horizontal,
+                                children: List.generate(
+                                  state.product.length,
+                                  (index) => Hero(
                                     tag: 'product$index',
                                     child: GestureDetector(
                                       onTap: () {
@@ -312,15 +343,15 @@ class HomePageState extends ResumableState<HomePage> {
                                             ));
                                       },
                                       child: card(
-                                          'https://images.k24klik.com/product/0104k0131.jpg',
+                                          "${Urls.productBaseUrl}/${state.product[index].gambar}",
                                           state.product[index].merekObat
                                               .toString(),
                                           state.product[index].harga.toString(),
                                           () {}),
                                     ),
                                   ),
-                                ),
-                              ));
+                                )),
+                          );
                         }
                         if (state is DashboardFailed) {
                           return Center(
@@ -370,35 +401,41 @@ class Penyakit {
 Widget searchBar(
     BuildContext context,
     TextEditingController textEditingController,
-    Function(String)? onSubmitted) {
+    Function(String)? onSubmitted,
+    Widget category) {
   return Container(
     width: MediaQuery.of(context).size.width / 1.05,
-    height: MediaQuery.of(context).size.height / 16,
+    height: MediaQuery.of(context).size.height / 7.5,
     decoration: BoxDecoration(
         color: Colors.white, borderRadius: BorderRadius.circular(14)),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+    child: Column(
       children: [
-        const Gap(5),
-        const Icon(
-          Icons.search,
-          size: 20,
-        ),
-        const Gap(5),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: TextField(
-              style: titleStyleText().copyWith(fontSize: 12),
-              controller: textEditingController,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Silahkan Cari Obat Disini",
-                  hintStyle: titleStyleText().copyWith(fontSize: 12)),
-              onSubmitted: onSubmitted,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Gap(5),
+            const Icon(
+              Icons.search,
+              size: 20,
             ),
-          ),
+            const Gap(5),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: TextField(
+                  style: titleStyleText().copyWith(fontSize: 12),
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Silahkan Cari Obat Disini",
+                      hintStyle: titleStyleText().copyWith(fontSize: 12)),
+                  onSubmitted: onSubmitted,
+                ),
+              ),
+            ),
+          ],
         ),
+        category
       ],
     ),
   );
@@ -407,7 +444,7 @@ Widget searchBar(
 Widget card(String image, String title, String price, VoidCallback onTap) {
   return Container(
     width: 150,
-    height: 250,
+    height: 200,
     decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -421,9 +458,20 @@ Widget card(String image, String title, String price, VoidCallback onTap) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(image, height: 100)),
+        Container(
+          width: double.infinity,
+          height: 100,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image:
+                DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
+          ),
+        ),
+        // ClipRRect(
+        //     borderRadius: BorderRadius.circular(8),
+        //     child: Image.network(
+        //       image,
+        //     )),
         const Gap(14),
         SizedBox(
           width: double.maxFinite,
@@ -441,18 +489,18 @@ Widget card(String image, String title, String price, VoidCallback onTap) {
           price,
           style: titleStyleText().copyWith(color: ColorStyle.primaryColor),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
-          child: SizedBox(
-            child: CustomOutlineButton(
-                function: onTap,
-                child: Text(
-                  "+ Tambah",
-                  style:
-                      titleStyleText().copyWith(color: ColorStyle.primaryColor),
-                )),
-          ),
-        )
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 3),
+        //   child: SizedBox(
+        //     child: CustomOutlineButton(
+        //         function: onTap,
+        //         child: Text(
+        //           "+ Tambah",
+        //           style:
+        //               titleStyleText().copyWith(color: ColorStyle.primaryColor),
+        //         )),
+        //   ),
+        // )
       ],
     ),
   );

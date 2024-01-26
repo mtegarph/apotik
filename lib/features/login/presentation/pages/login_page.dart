@@ -6,6 +6,7 @@ import 'package:apotik/features/dashboard/presentation/pages/dashboard_page.dart
 
 import 'package:apotik/features/login/presentation/bloc/get_login/login_bloc.dart';
 import 'package:apotik/features/login/presentation/bloc/post_login/post_login_bloc.dart';
+import 'package:apotik/features/login/presentation/pages/register_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class LoginPage extends StatelessWidget {
                       const Gap(20),
                       Center(
                         child: Text(
-                          "Selamat Datang \nDi ApotikQU",
+                          "Selamat Datang \nDi ApotekQU",
                           style: headlineStyleText()
                               .copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
@@ -90,16 +91,24 @@ class LoginPage extends StatelessWidget {
                       const Gap(50),
                       BlocConsumer<PostLoginBloc, PostLoginState>(
                         listener: (context, state) {
+                          print(state.toString());
                           if (state is LoginPostSuccess) {
-                            Navigator.pop(context);
-                            // Navigator.pushReplacement(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => const DashboardPage(),
-                            //     ));
+                            // Navigator.pop(context);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const DashboardPage(),
+                                ));
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     backgroundColor: Colors.black,
+                            //     content: Text(state.message),
+                            //   ),
+                            // );
+                          } else if (state is LoginPostFailed) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                backgroundColor: Colors.black,
+                                backgroundColor: Colors.redAccent,
                                 content: Text(state.message),
                               ),
                             );
@@ -129,19 +138,28 @@ class LoginPage extends StatelessWidget {
                       Gap(
                         MediaQuery.of(context).size.height / 25,
                       ),
-                      // Center(
-                      //   child: Wrap(children: [
-                      //     Text(
-                      //       "Tidak Punya Akun?",
-                      //       style: titleStyleText(),
-                      //     ),
-                      //     Text(
-                      //       "Daftar Disini",
-                      //       style: titleStyleText()
-                      //           .copyWith(color: ColorStyle.primaryColor),
-                      //     ),
-                      //   ]),
-                      // )
+                      Center(
+                        child: Wrap(children: [
+                          Text(
+                            "Tidak Punya Akun?",
+                            style: titleStyleText(),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegisterPage()));
+                            },
+                            child: Text(
+                              "Daftar Disini",
+                              style: titleStyleText()
+                                  .copyWith(color: ColorStyle.primaryColor),
+                            ),
+                          ),
+                        ]),
+                      )
                     ],
                   ),
                 ),

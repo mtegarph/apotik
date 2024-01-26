@@ -7,12 +7,15 @@ import 'package:apotik/features/dashboard/domain/usecases/get_product_search.dar
 import 'package:apotik/features/dashboard/presentation/bloc/bloc/product_search_bloc.dart';
 import 'package:apotik/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:apotik/features/login/data/datasources/remote/login_api_services.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
 import 'package:apotik/features/login/data/repositories/login_repository_impl.dart';
 import 'package:apotik/features/login/domain/repositories/login_repository.dart';
 import 'package:apotik/features/login/domain/usecases/get_login.dart';
 import 'package:apotik/features/login/domain/usecases/post_login.dart';
+import 'package:apotik/features/login/domain/usecases/post_register.dart';
 import 'package:apotik/features/login/presentation/bloc/get_login/login_bloc.dart';
 import 'package:apotik/features/login/presentation/bloc/post_login/post_login_bloc.dart';
+import 'package:apotik/features/login/presentation/bloc/post_register/post_register_bloc.dart';
 import 'package:apotik/features/product/data/datasources/local/hive_data.dart';
 import 'package:apotik/features/product/data/repositories/detail_product_repository_impl.dart';
 import 'package:apotik/features/product/domain/repositories/product_repository.dart';
@@ -25,19 +28,25 @@ import 'package:apotik/features/product/presentation/bloc/product_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initializeDependencies() async {
 //dio
   sl.registerSingleton<Dio>(Dio());
+  //sharedpref
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerSingleton<SharedPreferences>(sharedPreferences);
   //http
   sl.registerLazySingleton(() => http.Client());
   //data source
   sl.registerLazySingleton<LoginApiService>(() => LoginApiService(sl()));
-  sl.registerLazySingleton<LoginPostApi>(() => LoginPostApiImpl(client: sl()));
+  sl.registerLazySingleton<LoginPostApi>(
+      () => LoginPostApiImpl(client: sl(), localLogin: sl()));
   sl.registerSingleton<ProducApiService>(ProducApiServiceImpl(client: sl()));
   sl.registerSingleton<HiveData>(HiveData());
+  sl.registerSingleton<LocalLogin>(LocalLogin());
   //repository
   sl.registerSingleton<LoginRepository>(
       LoginRepositoryImpl(loginApiService: sl(), loginPostApi: sl()));
@@ -59,6 +68,8 @@ Future<void> initializeDependencies() async {
       GetKeranjangProductUseCase(productDetailRepository: sl()));
   sl.registerSingleton<GetProductSearchUseCase>(
       GetProductSearchUseCase(productRepository: sl()));
+  sl.registerSingleton<PostRegisterUseCase>(
+      PostRegisterUseCase(loginRepository: sl()));
   //bloc
   sl.registerFactory<LoginBloc>(() => LoginBloc(sl(), sl()));
   sl.registerFactory<PostLoginBloc>(() => PostLoginBloc(sl()));
@@ -67,4 +78,5 @@ Future<void> initializeDependencies() async {
   sl.registerFactory<KeranjangBloc>(() => KeranjangBloc(sl()));
   sl.registerFactory<GetKeranjangBloc>(() => GetKeranjangBloc(sl()));
   sl.registerFactory<ProductSearchBloc>(() => ProductSearchBloc(sl()));
+  sl.registerFactory<PostRegisterBloc>(() => PostRegisterBloc(sl()));
 }

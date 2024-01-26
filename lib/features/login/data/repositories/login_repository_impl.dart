@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:apotik/core/error/exception.dart';
 import 'package:apotik/core/error/failure.dart';
 import 'package:apotik/core/parameter/parameter.dart';
+import 'package:apotik/core/parameter/register.dart';
 import 'package:apotik/features/login/data/datasources/remote/login_api_services.dart';
 import 'package:apotik/features/login/domain/entities/login_entity.dart';
 import 'package:apotik/features/login/domain/repositories/login_repository.dart';
@@ -29,6 +30,19 @@ class LoginRepositoryImpl extends LoginRepository {
   Future<Either<Failure, String>> login(ParameterUpdate parameterUpdate) async {
     try {
       await loginPostApi.postApi(parameterUpdate);
+      return const Right("data successfuly added");
+    } on ServerException {
+      return const Left(ServerFailure("An Error Has Occured"));
+    } on SocketException {
+      return const Left(ConnectionFailure("no network"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> register(
+      ParameterRegister parameterUpdate) async {
+    try {
+      await loginPostApi.postRegister(parameterUpdate);
       return const Right("data successfuly added");
     } on ServerException {
       return const Left(ServerFailure("An Error Has Occured"));

@@ -6,6 +6,7 @@ import 'package:apotik/features/dashboard/presentation/bloc/dashboard_bloc.dart'
 import 'package:apotik/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:apotik/features/login/presentation/bloc/get_login/login_bloc.dart';
 import 'package:apotik/features/login/presentation/bloc/post_login/post_login_bloc.dart';
+import 'package:apotik/features/login/presentation/bloc/post_register/post_register_bloc.dart';
 
 import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:apotik/features/product/data/models/local/obat_hive.dart';
@@ -40,6 +41,9 @@ class MyApp extends StatelessWidget {
           create: (context) => sl()..add(const OnLogin()),
         ),
         BlocProvider<PostLoginBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<PostRegisterBloc>(
           create: (context) => sl(),
         ),
         BlocProvider<DashboardBloc>(
