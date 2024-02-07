@@ -5,13 +5,17 @@ import 'package:apotik/core/constant/constant.dart';
 import 'package:apotik/core/utils/size_utils.dart';
 import 'package:apotik/dependency_injection.dart';
 import 'package:apotik/features/dashboard/domain/entities/product_entity.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
+import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:apotik/features/product/domain/entities/detail_product_keranjang_entity.dart';
 import 'package:apotik/features/product/presentation/bloc/bloc/keranjang_bloc.dart';
 import 'package:apotik/features/product/presentation/bloc/product_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:supercharged/supercharged.dart';
 
 class DetailProductPage extends StatefulWidget {
@@ -108,7 +112,9 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                               children: [
                                                 Text(
                                                     "${state.product.merekObat.toString()} ${state.product.isiPerkemasan}",
-                                                    style: headlineStyleText().copyWith(fontSize: 17)),
+                                                    style: headlineStyleText()
+                                                        .copyWith(
+                                                            fontSize: 17)),
                                                 SizedBox(height: 3.v),
                                                 Row(children: [
                                                   CustomRatingBar(
@@ -229,7 +235,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 18.0, vertical: 5),
                                     child: Text(
-                                      "Khasiat",
+                                      "Indikasi",
                                       softWrap: true,
                                       textAlign: TextAlign.justify,
                                       style: titleStyleText().copyWith(
@@ -287,22 +293,31 @@ class _DetailProductPageState extends State<DetailProductPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                        child: Text(
-                          "Rp ${stateProduct.product.harga.toString()}",
-                          softWrap: true,
-                          textAlign: TextAlign.justify,
-                          style: titleStyleText(),
+                        padding: const EdgeInsets.only(
+                          left: 18.0,
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 18.0, right: 18),
-                        child: Text(
-                          "Per Strip",
-                          softWrap: true,
-                          textAlign: TextAlign.justify,
-                          style: titleStyleText()
-                              .copyWith(fontSize: 12, color: Colors.grey),
+                        child: Row(
+                          children: [
+                            Text(
+                              NumberFormat.currency(
+                                      locale: 'id_ID', symbol: 'Rp ')
+                                  .format(stateProduct.product.harga),
+                              style: titleStyleText(),
+                            ),
+
+                            //const Gap(3),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 4.0, right: 18),
+                              child: Text(
+                                "Per Strip",
+                                softWrap: true,
+                                textAlign: TextAlign.justify,
+                                style: titleStyleText()
+                                    .copyWith(fontSize: 12, color: Colors.grey),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -333,10 +348,31 @@ class _DetailProductPageState extends State<DetailProductPage> {
                                       jenisObat: stateProduct.product.jenisObat,
                                       merekObat: stateProduct.product.merekObat,
                                       namaObat: stateProduct.product.namaObat,
+                                      gambar: stateProduct.product.gambar,
                                       nroObat: stateProduct.product.nroObat);
-                              context.read<KeranjangBloc>().add(AddKeranjang(
-                                  detaiObatKeranjangEntity:
-                                      detaiObatKeranjangEntity));
+                              GetIt.instance<LocalLogin>()
+                                  .getNama()
+                                  .then((value) {
+                                if (value == "null") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.redAccent,
+                                      content: Text(
+                                          "Anda Harus Melakukan Login Terlebih Dahulu"),
+                                    ),
+                                  );
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const LoginPage()));
+                                } else {
+                                  context.read<KeranjangBloc>().add(
+                                      AddKeranjang(
+                                          detaiObatKeranjangEntity:
+                                              detaiObatKeranjangEntity));
+                                }
+                              });
                             },
                             child: Text(
                               "Beli",

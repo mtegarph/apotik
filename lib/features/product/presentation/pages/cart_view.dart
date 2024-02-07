@@ -1,5 +1,6 @@
 import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/config/theme/app_widget.dart';
+import 'package:apotik/core/constant/constant.dart';
 import 'package:apotik/core/utils/size_utils.dart';
 import 'package:apotik/features/product/data/datasources/local/hive_data.dart';
 import 'package:apotik/features/product/domain/entities/detail_product_keranjang_entity.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:supercharged/supercharged.dart';
 
 class CartView extends StatelessWidget {
@@ -93,6 +95,7 @@ class CartView extends StatelessWidget {
                                               DetaiObatKeranjangEntity
                                                   detaiObatKeranjangEntity =
                                                   DetaiObatKeranjangEntity(
+                                                      gambar: item.gambar,
                                                       stok: item.stok == 0
                                                           ? 0
                                                           : item.stok! - 1,
@@ -144,6 +147,7 @@ class CartView extends StatelessWidget {
                                               DetaiObatKeranjangEntity
                                                   detaiObatKeranjangEntity =
                                                   DetaiObatKeranjangEntity(
+                                                      gambar: item.gambar,
                                                       stok: item.stok! + 1,
                                                       gejala: item.gejala,
                                                       harga: item.harga,
@@ -228,10 +232,10 @@ class CardObat extends StatelessWidget {
             width: 130,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                image: const DecorationImage(
+                image: DecorationImage(
                     fit: BoxFit.contain,
-                    image: NetworkImage(
-                        "https://uploads-ssl.webflow.com/6302549cb7ad659d9d1cdcca/6304cb305d6a63b12bcb78ca_Panadol_Obat_Sakit_Kepala_Extra-thumbnail-540x540.png"))),
+                    image:
+                        NetworkImage('${Urls.productBaseUrl}/${item.gambar}'))),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,7 +259,10 @@ class CardObat extends StatelessWidget {
                     maxLines: 1),
               ),
               const Gap(15),
-              Text(item.harga.toString()),
+              Text(
+                NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+                    .format(item.harga),
+              ),
             ],
           )
         ],
@@ -301,7 +308,13 @@ class CarDetail extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [const Text("Order"), Text(total.toString())],
+                  children: [
+                    const Text("Order"),
+                    Text(
+                      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+                          .format(total),
+                    )
+                  ],
                 ),
               ),
               const Padding(
@@ -311,11 +324,17 @@ class CarDetail extends StatelessWidget {
                   children: [Text("PPN"), Text("10%")],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("Ongkir"), Text("5000")],
+                  children: [
+                    const Text("Ongkir"),
+                    Text(
+                      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+                          .format(5000),
+                    )
+                  ],
                 ),
               ),
               Padding(
@@ -324,7 +343,9 @@ class CarDetail extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Total"),
-                    Text(((total * 0.10) + total + 5000).toString())
+                    Text(NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+                        .format((total * 0.10) + total + 5000)
+                        .toString())
                   ],
                 ),
               )

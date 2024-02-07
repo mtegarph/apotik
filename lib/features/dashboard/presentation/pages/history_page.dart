@@ -1,4 +1,6 @@
 import 'package:apotik/config/theme/app_theme.dart';
+import 'package:apotik/core/constant/constant.dart';
+import 'package:apotik/features/dashboard/domain/entities/product_entity.dart';
 import 'package:apotik/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:apotik/features/product/presentation/bloc/product_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -59,6 +62,26 @@ class HistoryProcessPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<ProductEntity> product = [
+      ProductEntity(
+          namaObat: "Panadol Paracetamol",
+          isiPerkemasan: "10 tablet",
+          harga: 10000,
+          gambar:
+              "https://api.watsons.co.id/medias/zoom-front-10339.jpg?context=bWFzdGVyfHd0Y2lkL2ltYWdlc3w4OTY2NHxpbWFnZS9qcGVnfGFETmxMMmd6WlM4eE1UWTFPVFUxT0RjNE1EazFPQzk2YjI5dExXWnliMjUwTFRFd016TTVMbXB3Wnd8OGRlNTkzNjVhOTVkNWRkN2U5ZTQyMmVhM2Q2NDQ0ODVmODE5MTNkZjQ0NTE5ZGVmZGMzMzBjNzc3YTRjZTdiYQ"),
+      ProductEntity(
+          namaObat: "Lansoprazole",
+          isiPerkemasan: "10 tablet",
+          harga: 15000,
+          gambar:
+              "https://images.k24klik.com/product/apotek_online_k24klik_20210430095421359225_LANSOPRAZOLE-HEXPHARM-30MG-CAPS-50S.jpg"),
+      ProductEntity(
+          namaObat: "Lopamid",
+          isiPerkemasan: "10 tablet",
+          harga: 10000,
+          gambar:
+              "https://res-3.cloudinary.com/dk0z4ums3/image/upload/c_scale,h_750,w_750/v1/production/pharmacy/products/1660093484_5fb37d1441ab59059e8686a0"),
+    ];
     return SingleChildScrollView(
       child: BlocBuilder<DashboardBloc, DashboardState>(
         builder: (context, state) {
@@ -69,7 +92,7 @@ class HistoryProcessPage extends StatelessWidget {
           }
           if (state is DashboardSuccess) {
             return Wrap(
-                spacing: 8.0, // gap between adjacent chips
+                spacing: 8.0,
                 runSpacing: 4.0,
                 direction: Axis.horizontal,
                 children: List.generate(
@@ -80,10 +103,10 @@ class HistoryProcessPage extends StatelessWidget {
                         children: [
                           card(
                             context,
-                            state.product[index].namaObat.toString(),
+                            state.product[index].merekObat.toString(),
                             state.product[index].isiPerkemasan.toString(),
                             state.product[index].harga.toString(),
-                            'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
+                            "${Urls.productBaseUrl}/${state.product[index].gambar}",
                           ),
                           Divider(
                             color: Colors.grey[400],
@@ -95,9 +118,31 @@ class HistoryProcessPage extends StatelessWidget {
                 ));
           }
           if (state is DashboardFailed) {
-            return Center(
-              child: Text(state.message.toString()),
-            );
+            return Wrap(
+                spacing: 8.0, // gap between adjacent chips
+                runSpacing: 4.0,
+                direction: Axis.horizontal,
+                children: List.generate(
+                  product.length,
+                  (index) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          card(
+                            context,
+                            product[index].namaObat.toString(),
+                            product[index].isiPerkemasan.toString(),
+                            product[index].harga.toString(),
+                            product[index].gambar.toString(),
+                          ),
+                          Divider(
+                            color: Colors.grey[400],
+                            height: 6,
+                            thickness: 1,
+                          )
+                        ],
+                      )),
+                ));
           }
           return const SizedBox.shrink();
         },
@@ -147,7 +192,9 @@ class HistoryProcessPage extends StatelessWidget {
                 Text("•",
                     style: titleStyleText().copyWith(color: Colors.grey[600])),
                 const SizedBox(width: 3),
-                Text("Rp $price",
+                Text(
+                    NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+                        .format(int.parse(price)),
                     style: titleStyleText().copyWith(color: Colors.grey[600])),
               ],
             )

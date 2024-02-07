@@ -1,8 +1,11 @@
 import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/config/theme/app_widget.dart';
 import 'package:apotik/core/utils/size_utils.dart';
+import 'package:apotik/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:apotik/features/dashboard/presentation/widgets/custom_image_view.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -42,10 +45,10 @@ class ProfilePage extends StatelessWidget {
                     style: headlineStyleText().copyWith(color: Colors.white),
                   ),
                   SizedBox(height: 4.v),
-                  Text(
-                    "mtegarph@gmail.com",
-                    style: titleStyleText().copyWith(color: Colors.white),
-                  ),
+                  // Text(
+                  //   "mtegarph@gmail.com",
+                  //   style: titleStyleText().copyWith(color: Colors.white),
+                  // ),
                 ],
               ),
             ),
@@ -54,15 +57,47 @@ class ProfilePage extends StatelessWidget {
             listMenu("Edit Alamat", () {}),
             listMenu("FAQ", () {}),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: CustomOutlineButton(
-                  function: () {},
-                  child: Text(
-                    "Log Out",
-                    style: headlineStyleText().copyWith(color: Colors.red),
-                  )),
-            )
+            FutureBuilder(
+                future: GetIt.instance<LocalLogin>().getNama(),
+                builder: (context, snapshot) {
+                  if (snapshot.data == "null") {
+                    return const SizedBox.shrink();
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: CustomOutlineButton(
+                          function: () {
+                            GetIt.instance<LocalLogin>()
+                                .getNama()
+                                .then((value) async {
+                              if (value != "null") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    backgroundColor: Colors.redAccent,
+                                    content: Text("Logout Success",
+                                        style: TextStyle(color: Colors.white)),
+                                  ),
+                                );
+                                await LocalLogin().saveNamaCustomer("null");
+                                await LocalLogin().saveBearerToken("");
+                                // ignore: use_build_context_synchronously
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DashboardPage(),
+                                    ));
+                              }
+                            });
+                          },
+                          child: Text(
+                            "Log Out",
+                            style:
+                                headlineStyleText().copyWith(color: Colors.red),
+                          )),
+                    );
+                  }
+                })
           ],
         ),
       ),

@@ -10,6 +10,7 @@ class ProductMapper {
         jenisObat: obatHive.jenisObat,
         merekObat: obatHive.merekObat,
         namaObat: obatHive.namaObat,
-        stok: obatHive.stok);
+        stok: obatHive.stok,
+        gambar: obatHive.gambar);
   }
 }

@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:need_resume/need_resume.dart';
 
 import 'package:apotik/config/theme/app_theme.dart';
@@ -51,7 +52,6 @@ class HomePageState extends ResumableState<HomePage> {
   @override
   void onPause() {
     // Implement your code inside here
-
     print('HomeScreen is paused!');
   }
 
@@ -142,14 +142,14 @@ class HomePageState extends ResumableState<HomePage> {
                                             style: titleStyleText(),
                                           )
                                         : SizedBox(
-                                          width: 130,
-                                          child: Text(
+                                            width: 130,
+                                            child: Text(
                                               "Hello, ${snapshot.data}",
                                               style: titleStyleText(),
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 1,
                                             ),
-                                        );
+                                          );
                                   }),
                               Gap(MediaQuery.of(context).size.width / 4.5),
                               GestureDetector(
@@ -289,16 +289,24 @@ class HomePageState extends ResumableState<HomePage> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: GestureDetector(
                             onTap: () {
-                              if (penyakit[index].active == true) {
-                                setState(() {
-                                  penyakit[index].active = false;
-                                });
-                              }
+                              // if (penyakit[index].active == true) {
+                              //   setState(() {
+                              //     penyakit[index].active = false;
+                              //   });
+                              // }
                               setState(() {
-                                penyakit[index].active = true;
+                                penyakit[index].active =
+                                    !penyakit[index].active;
+                                //penyakit[index].active = true;
+                              });
+                              if (penyakit[index].active == true) {
                                 context.read<DashboardBloc>().add(GetProductEvent(
                                     "/obat/khasiat/${penyakit[index].penyakit}"));
-                              });
+                              } else {
+                                context
+                                    .read<DashboardBloc>()
+                                    .add(const GetProductEvent("/obat/umum/"));
+                              }
                             },
                             child: ChoiceChip(
                                 label: Text(penyakit[index].penyakit),
@@ -486,7 +494,8 @@ Widget card(String image, String title, String price, VoidCallback onTap) {
           ),
         ),
         Text(
-          price,
+          NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+              .format(int.parse(price)),
           style: titleStyleText().copyWith(color: ColorStyle.primaryColor),
         ),
         // Padding(

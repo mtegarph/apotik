@@ -24,13 +24,14 @@ class ObatHiveAdapter extends TypeAdapter<ObatHive> {
       harga: fields[5] as int?,
       stok: fields[6] as int?,
       gejala: fields[4] as String?,
+      gambar: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ObatHive obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.nroObat)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class ObatHiveAdapter extends TypeAdapter<ObatHive> {
       ..writeByte(5)
       ..write(obj.harga)
       ..writeByte(6)
-      ..write(obj.stok);
+      ..write(obj.stok)
+      ..writeByte(7)
+      ..write(obj.gambar);
   }
 
   @override

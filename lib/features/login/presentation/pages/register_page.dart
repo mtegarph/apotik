@@ -64,12 +64,19 @@ class RegisterPage extends StatelessWidget {
                         const Gap(20),
                         Center(
                           child: Text(
-                            "Selamat Datang \nDi ApotekQU",
+                            "Ayo Mulai!",
                             style: headlineStyleText()
                                 .copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
                         ),
+                        Center(
+                            child: Text(
+                          "Buat akun baru",
+                          style: headlineStyleText()
+                              .copyWith(fontWeight: FontWeight.bold,fontSize: 12,color: Colors.grey[500]),
+                          textAlign: TextAlign.center,
+                        )),
                         const Gap(50),
                         Text(
                           "Username",

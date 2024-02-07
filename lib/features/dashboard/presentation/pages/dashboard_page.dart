@@ -2,7 +2,10 @@ import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/features/dashboard/presentation/pages/history_page.dart';
 import 'package:apotik/features/dashboard/presentation/pages/home_page.dart';
 import 'package:apotik/features/dashboard/presentation/pages/profile_page.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
+import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:supercharged/supercharged.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -14,9 +17,26 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   int selectedIndex = 0;
+  bool notLogin = false;
   void onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
+    GetIt.instance<LocalLogin>().getNama().then((value) {
+      if (value == "null") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text("Anda Harus Melakukan Login Terlebih Dahulu"),
+          ),
+        );
+        setState(() {
+          notLogin = true;
+        });
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const LoginPage()));
+      } else {
+        setState(() {
+          selectedIndex = index;
+        });
+      }
     });
   }
 

@@ -57,12 +57,22 @@ class LoginPage extends StatelessWidget {
                       const Gap(20),
                       Center(
                         child: Text(
-                          "Selamat Datang \nDi ApotekQU",
+                          "Selamat Datang Di Salma",
                           style: headlineStyleText()
                               .copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                       ),
+                      const Gap(5),
+                      Center(
+                          child: Text(
+                        "Nikmati kemudahan Mencari Produk Sesuai Keinginan Kamu",
+                        style: headlineStyleText().copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.grey[500]),
+                        textAlign: TextAlign.center,
+                      )),
                       const Gap(50),
                       Text(
                         "Username",

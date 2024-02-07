@@ -4,19 +4,20 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i7;
-import 'dart:convert' as _i15;
-import 'dart:typed_data' as _i16;
+import 'dart:convert' as _i16;
+import 'dart:typed_data' as _i17;
 
 import 'package:apotik/core/error/failure.dart' as _i8;
 import 'package:apotik/core/parameter/parameter.dart' as _i10;
+import 'package:apotik/core/parameter/register.dart' as _i11;
 import 'package:apotik/features/login/data/datasources/remote/login_api_services.dart'
-    as _i11;
-import 'package:apotik/features/login/data/models/login_model.dart' as _i12;
+    as _i12;
+import 'package:apotik/features/login/data/models/login_model.dart' as _i13;
 import 'package:apotik/features/login/domain/entities/login_entity.dart' as _i9;
 import 'package:apotik/features/login/domain/repositories/login_repository.dart'
     as _i4;
-import 'package:apotik/features/login/domain/usecases/get_login.dart' as _i13;
-import 'package:apotik/features/login/domain/usecases/post_login.dart' as _i14;
+import 'package:apotik/features/login/domain/usecases/get_login.dart' as _i14;
+import 'package:apotik/features/login/domain/usecases/post_login.dart' as _i15;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:dio/dio.dart' as _i6;
 import 'package:http/http.dart' as _i5;
@@ -201,37 +202,55 @@ class MockLoginRepository extends _i1.Mock implements _i4.LoginRepository {
           ),
         )),
       ) as _i7.Future<_i2.Either<_i8.Failure, String>>);
+
+  @override
+  _i7.Future<_i2.Either<_i8.Failure, String>> register(
+          _i11.ParameterRegister? parameterUpdate) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #register,
+          [parameterUpdate],
+        ),
+        returnValue: _i7.Future<_i2.Either<_i8.Failure, String>>.value(
+            _FakeEither_0<_i8.Failure, String>(
+          this,
+          Invocation.method(
+            #register,
+            [parameterUpdate],
+          ),
+        )),
+      ) as _i7.Future<_i2.Either<_i8.Failure, String>>);
 }
 
 /// A class which mocks [LoginApiService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLoginApiService extends _i1.Mock implements _i11.LoginApiService {
+class MockLoginApiService extends _i1.Mock implements _i12.LoginApiService {
   MockLoginApiService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i7.Future<_i3.HttpResponse<_i12.Login>> getLogin() => (super.noSuchMethod(
+  _i7.Future<_i3.HttpResponse<_i13.Login>> getLogin() => (super.noSuchMethod(
         Invocation.method(
           #getLogin,
           [],
         ),
-        returnValue: _i7.Future<_i3.HttpResponse<_i12.Login>>.value(
-            _FakeHttpResponse_1<_i12.Login>(
+        returnValue: _i7.Future<_i3.HttpResponse<_i13.Login>>.value(
+            _FakeHttpResponse_1<_i13.Login>(
           this,
           Invocation.method(
             #getLogin,
             [],
           ),
         )),
-      ) as _i7.Future<_i3.HttpResponse<_i12.Login>>);
+      ) as _i7.Future<_i3.HttpResponse<_i13.Login>>);
 }
 
 /// A class which mocks [LoginPostApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLoginPostApi extends _i1.Mock implements _i11.LoginPostApi {
+class MockLoginPostApi extends _i1.Mock implements _i12.LoginPostApi {
   MockLoginPostApi() {
     _i1.throwOnMissingStub(this);
   }
@@ -245,12 +264,22 @@ class MockLoginPostApi extends _i1.Mock implements _i11.LoginPostApi {
         ),
         returnValue: _i7.Future<dynamic>.value(),
       ) as _i7.Future<dynamic>);
+
+  @override
+  _i7.Future<dynamic> postRegister(_i11.ParameterRegister? parameterRegister) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #postRegister,
+          [parameterRegister],
+        ),
+        returnValue: _i7.Future<dynamic>.value(),
+      ) as _i7.Future<dynamic>);
 }
 
 /// A class which mocks [GetLoginUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetLoginUseCase extends _i1.Mock implements _i13.GetLoginUseCase {
+class MockGetLoginUseCase extends _i1.Mock implements _i14.GetLoginUseCase {
   MockGetLoginUseCase() {
     _i1.throwOnMissingStub(this);
   }
@@ -287,7 +316,7 @@ class MockGetLoginUseCase extends _i1.Mock implements _i13.GetLoginUseCase {
 /// A class which mocks [PostLoginUseCase].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPostLoginUseCase extends _i1.Mock implements _i14.PostLoginUseCase {
+class MockPostLoginUseCase extends _i1.Mock implements _i15.PostLoginUseCase {
   MockPostLoginUseCase() {
     _i1.throwOnMissingStub(this);
   }
@@ -377,7 +406,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i15.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -408,7 +437,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i15.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -439,7 +468,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i15.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -470,7 +499,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i15.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -511,7 +540,7 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
       ) as _i7.Future<String>);
 
   @override
-  _i7.Future<_i16.Uint8List> readBytes(
+  _i7.Future<_i17.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -521,8 +550,8 @@ class MockHttpClient extends _i1.Mock implements _i5.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i7.Future<_i16.Uint8List>.value(_i16.Uint8List(0)),
-      ) as _i7.Future<_i16.Uint8List>);
+        returnValue: _i7.Future<_i17.Uint8List>.value(_i17.Uint8List(0)),
+      ) as _i7.Future<_i17.Uint8List>);
 
   @override
   _i7.Future<_i5.StreamedResponse> send(_i5.BaseRequest? request) =>

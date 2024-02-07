@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:supercharged/supercharged.dart';
 
 class SearchProductPage extends StatelessWidget {
@@ -34,31 +35,41 @@ class SearchProductPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 20.0, top: 10),
                     child: Wrap(
-                        spacing: 50.0,
-                        runSpacing: 20.0,
+                        spacing: 100.0,
+                        runSpacing: 30.0,
                         direction: Axis.horizontal,
                         children: List.generate(
                           state.products.length,
-                          (index) => Hero(
-                            tag: 'product$index',
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => DetailProductPage(
-                                          idObat:
-                                              state.products[index].nroObat!,
-                                          index: index,
-                                          productEntity: state.products[index]),
-                                    ));
-                              },
-                              child: card(
-                                  "${Urls.productBaseUrl}/${state.products[index].gambar}",
-                                  state.products[index].merekObat.toString(),
-                                  state.products[index].harga.toString(),
-                                  () {}),
-                            ),
+                          (index) => Column(
+                            children: [
+                              Hero(
+                                tag: 'product$index',
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailProductPage(
+                                                  idObat: state
+                                                      .products[index].nroObat!,
+                                                  index: index,
+                                                  productEntity:
+                                                      state.products[index]),
+                                        ));
+                                  },
+                                  child: card(
+                                      state.products[index].gambar ==
+                                              "public/src/img/DUMMY.jpeg"
+                                          ? "https://vitaminshouse.com/wp-content/uploads/2021/05/Children-s-Panadol-Infant-drops-30ml-Vitamins-house.png"
+                                          : "${Urls.productBaseUrl}/${state.products[index].gambar}",
+                                      state.products[index].merekObat
+                                          .toString(),
+                                      state.products[index].harga.toString(),
+                                      () {}),
+                                ),
+                              ),
+                            ],
                           ),
                         )),
                   ),
@@ -68,12 +79,13 @@ class SearchProductPage extends StatelessWidget {
             if (state is ProductSearchFailed) {
               return Text(state.message.toString());
             }
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           },
         ));
   }
 
   Widget card(String image, String title, String price, VoidCallback onTap) {
+    print(image);
     return Container(
       width: 150,
       height: 200,
@@ -112,8 +124,10 @@ class SearchProductPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
+
           Text(
-            price,
+            NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ')
+                .format(int.parse(price)),
             style: titleStyleText().copyWith(color: ColorStyle.primaryColor),
           ),
           // Padding(

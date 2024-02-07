@@ -8,6 +8,7 @@ class DetaiObatKeranjangEntity extends Equatable {
   int? harga;
   int? stok;
   String? gejala;
+  String? gambar;
 
   DetaiObatKeranjangEntity(
       {this.nroObat,
@@ -16,7 +17,8 @@ class DetaiObatKeranjangEntity extends Equatable {
       this.jenisObat,
       this.harga,
       this.stok,
-      this.gejala});
+      this.gejala,
+      this.gambar});
 
   @override
   // TODO: implement props
