@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:apotik/features/dashboard/domain/entities/detail_product_entity.dart';
 import 'package:apotik/features/dashboard/domain/usecases/get_detail_product.dart';
 import 'package:bloc/bloc.dart';
@@ -11,7 +13,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc(this.getProductDetailUseCase) : super(ProductInitial()) {
     on<GetDetailObat>(_onGetDetailProduct);
   }
-  void _onGetDetailProduct(
+
+  FutureOr<void> _onGetDetailProduct(
       GetDetailObat event, Emitter<ProductState> emit) async {
     emit(ObatDetailLoading());
     final result = await getProductDetailUseCase.call(params: event.idObat);
