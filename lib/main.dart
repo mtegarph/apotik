@@ -3,7 +3,11 @@ import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/dependency_injection.dart';
 import 'package:apotik/features/dashboard/presentation/bloc/bloc/product_search_bloc.dart';
 import 'package:apotik/features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import 'package:apotik/features/dashboard/presentation/bloc/transaksi_history_bloc/transaksi_history_bloc.dart';
 import 'package:apotik/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:apotik/features/history/presentation/bloc/get_detail_transaksi_bloc/history_bloc.dart';
+import 'package:apotik/features/history/presentation/bloc/set_transaksi_bloc/set_transaksi_bloc.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
 import 'package:apotik/features/login/presentation/bloc/get_login/login_bloc.dart';
 import 'package:apotik/features/login/presentation/bloc/post_login/post_login_bloc.dart';
 import 'package:apotik/features/login/presentation/bloc/post_register/post_register_bloc.dart';
@@ -11,11 +15,13 @@ import 'package:apotik/features/login/presentation/bloc/post_register/post_regis
 import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:apotik/features/product/data/models/local/obat_hive.dart';
 import 'package:apotik/features/product/presentation/bloc/get_keranjang/get_keranjang_bloc.dart';
-import 'package:apotik/features/product/presentation/bloc/bloc/keranjang_bloc.dart';
+import 'package:apotik/features/product/presentation/bloc/keranjang_bloc/keranjang_bloc.dart';
 import 'package:apotik/features/product/presentation/bloc/product_bloc.dart';
+import 'package:apotik/features/product/presentation/bloc/set_transaksi_bloc/set_transaksi_bloc.dart';
 import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -59,6 +65,18 @@ class MyApp extends StatelessWidget {
           create: (context) => sl(),
         ),
         BlocProvider<ProductSearchBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<SetTransaksiBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<TransaksiHistoryBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<DetailTransaksiBloc>(
+          create: (context) => sl(),
+        ),
+        BlocProvider<SetTransaksiBayarBloc>(
           create: (context) => sl(),
         ),
       ],

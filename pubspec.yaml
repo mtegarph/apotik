@@ -30,6 +30,7 @@ environment:
 dependencies:
   cached_network_image: ^3.2.3
   carousel_slider: ^4.2.1
+  chucker_flutter: ^1.6.1
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1
   equatable: ^2.0.5
@@ -42,21 +43,21 @@ dependencies:
   gap: ^3.0.1
   get_it: ^7.6.4
   google_fonts: ^5.1.0
-  http: ^1.1.0
-  intl: ^0.18.1
-  ionicons: ^0.2.2
-  retrofit: ^4.0.1
-  supercharged: ^2.1.1
-  chucker_flutter: ^1.6.1
-  multi_dropdown: ^2.1.2
-  need_resume: ^1.0.7+1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  http: ^1.1.0
+  image_picker: ^1.0.7
+  intl: ^0.18.1
+  ionicons: ^0.2.2
+  multi_dropdown: ^2.1.2
+  need_resume: ^1.0.7+1
+  retrofit: ^4.0.1
   shared_preferences: ^2.2.2
+  supercharged: ^2.1.1
+  uuid: ^4.3.3
 dev_dependencies:
   bloc_test: ^9.0.2
   build_runner: ^2.4.6
-  hive_generator: ^2.0.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -66,6 +67,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
+  hive_generator: ^2.0.0
   mockito: ^5.0.16
   mocktail: ^0.2.0
   retrofit_generator: ^7.0.8

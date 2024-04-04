@@ -52,7 +52,7 @@ class SelectObatPage extends StatelessWidget {
               }
               if (state is DashboardSuccess) {
                 return MultiSelectDropDown<ProductEntity>(
-                  showClearIcon: true,
+                  //showClearIcon: true,
                   onOptionSelected: (options) {
                     // debugPrint(options.toString());
                     _selectedOptions.addAll(options);
@@ -95,7 +95,7 @@ class SelectObatPage extends StatelessWidget {
               }
               if (state is DashboardSuccess) {
                 return MultiSelectDropDown<ProductEntity>(
-                  showClearIcon: true,
+                //  showClearIcon: true,
                   onOptionSelected: (options) {
                     // debugPrint(options.toString());
                     _selectedOptions.addAll(options);

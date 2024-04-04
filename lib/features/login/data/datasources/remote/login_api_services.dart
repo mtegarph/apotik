@@ -42,6 +42,9 @@ class LoginPostApiImpl extends LoginPostApi {
       var data = jsonDecode(response.body);
       await localLogin.saveBearerToken(data['token']);
       await localLogin.saveNamaCustomer(data['namaCustomer']);
+      await localLogin.saveUserId(data['userId'].toString());
+      var userId = await localLogin.getUserId();
+      print(userId);
       return jsonDecode(response.body);
     } else {
       throw ServerException();

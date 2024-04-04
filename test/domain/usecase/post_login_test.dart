@@ -15,7 +15,7 @@ void main() {
     postLoginUseCase = PostLoginUseCase(loginRepository: mockLoginRepository);
   });
   const tParams = ParameterUpdate(
-      email: 'test@test.com', name: 'password', noHp: "123123123");
+      password: 'test@test.com', name: 'password', noHp: "123123123",);
   const tSuccessResponse = 'Success';
 
   group("run post Login", () {

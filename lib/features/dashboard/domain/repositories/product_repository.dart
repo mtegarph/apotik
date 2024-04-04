@@ -1,6 +1,8 @@
 import 'package:apotik/core/error/failure.dart';
 import 'package:apotik/features/dashboard/domain/entities/detail_product_entity.dart';
 import 'package:apotik/features/dashboard/domain/entities/product_entity.dart';
+import 'package:apotik/features/dashboard/domain/entities/transaksi_entity.dart';
+
 import 'package:dartz/dartz.dart';
 
 abstract class ProductRepository {
@@ -9,4 +11,6 @@ abstract class ProductRepository {
       {required int idObat});
   Future<Either<Failure, List<ProductEntity>>> getProductSearch(
       {required String keyword, required String searchBy});
+  Future<Either<Failure, List<TransaksiHistoryEntity>>> getTransaksi(
+      {required int idCustomer});
 }

@@ -413,7 +413,7 @@ Widget searchBar(
     Widget category) {
   return Container(
     width: MediaQuery.of(context).size.width / 1.05,
-    height: MediaQuery.of(context).size.height / 7.5,
+    height: MediaQuery.of(context).size.height / 7.2,
     decoration: BoxDecoration(
         color: Colors.white, borderRadius: BorderRadius.circular(14)),
     child: Column(

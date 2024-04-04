@@ -8,7 +8,7 @@ import 'package:apotik/features/dashboard/domain/entities/product_entity.dart';
 import 'package:apotik/features/login/data/models/local/local_login.dart';
 import 'package:apotik/features/login/presentation/pages/login_page.dart';
 import 'package:apotik/features/product/domain/entities/detail_product_keranjang_entity.dart';
-import 'package:apotik/features/product/presentation/bloc/bloc/keranjang_bloc.dart';
+import 'package:apotik/features/product/presentation/bloc/keranjang_bloc/keranjang_bloc.dart';
 import 'package:apotik/features/product/presentation/bloc/product_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

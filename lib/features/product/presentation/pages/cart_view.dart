@@ -1,18 +1,25 @@
+import 'dart:math';
+
 import 'package:apotik/config/theme/app_theme.dart';
 import 'package:apotik/config/theme/app_widget.dart';
 import 'package:apotik/core/constant/constant.dart';
 import 'package:apotik/core/utils/size_utils.dart';
+import 'package:apotik/features/login/data/models/local/local_login.dart';
 import 'package:apotik/features/product/data/datasources/local/hive_data.dart';
 import 'package:apotik/features/product/domain/entities/detail_product_keranjang_entity.dart';
-import 'package:apotik/features/product/presentation/bloc/bloc/keranjang_bloc.dart';
+import 'package:apotik/features/product/domain/entities/transaksi_entity.dart';
+import 'package:apotik/features/product/presentation/bloc/keranjang_bloc/keranjang_bloc.dart';
 import 'package:apotik/features/product/presentation/bloc/get_keranjang/get_keranjang_bloc.dart';
+import 'package:apotik/features/product/presentation/bloc/set_transaksi_bloc/set_transaksi_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:supercharged/supercharged.dart';
+import 'package:uuid/uuid.dart';
 
 class CartView extends StatelessWidget {
   const CartView({super.key});
@@ -26,17 +33,6 @@ class CartView extends StatelessWidget {
             "Keranjang Beli",
             style: headlineStyleText(),
           ),
-        ),
-        bottomNavigationBar: SizedBox(
-          height: 70,
-          child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: CustomButton(
-                  function: () {},
-                  child: Text(
-                    "Bayar",
-                    style: headlineStyleText().copyWith(color: Colors.white),
-                  ))),
         ),
         body: BlocBuilder<GetKeranjangBloc, GetKeranjangState>(
           builder: (context, state) {
@@ -194,7 +190,82 @@ class CartView extends StatelessWidget {
                         total: state.item
                             .map((e) => e.harga! * (e.stok ?? 0))
                             .reduce((value, element) => value + element),
-                      )
+                      ),
+                      const Gap(50),
+                      BlocConsumer<SetTransaksiBloc, SetTransaksiState>(
+                        listener: (context, state) {
+                          if (state is SetTransaksiSuccess) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: Colors.greenAccent,
+                                content: Text("Transaksi Berhasil Dilakukan"),
+                              ),
+                            );
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     backgroundColor: Colors.black,
+                            //     content: Text(state.message),
+                            //   ),
+                            // );
+                          } else if (state is SetTransaksiFailed) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.redAccent,
+                                content: Text(state.message),
+                              ),
+                            );
+                          }
+                        },
+                        builder: (context, stateConsumer) {
+                          return SizedBox(
+                            height: 70,
+                            child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: CustomButton(
+                                    function: () {
+                                      // var transaksiId = const Uuid().v4();
+                                      // var detailTransaksiId = Uuid().v4();
+                                      var transaksiId = Random().nextInt(1000);
+                                      GetIt.instance<LocalLogin>()
+                                          .getUserId()
+                                          .then((value) {
+                                        TransaksiEntity transaksiEntity =
+                                            TransaksiEntity(
+                                                idCustomer: int.parse(value),
+                                                statusTransaksi: "Proses",
+                                                tglTransaksi:
+                                                    DateTime.now().toUtc(),
+                                                noTransaksi: transaksiId,
+                                                data: state.item
+                                                    .map((e) =>
+                                                        DataTransaksiEntity(
+                                                            hargaObat: e.harga!,
+                                                            namaObat: e.merekObat
+                                                                .toString(),
+                                                            idDetailTransaksi:
+                                                                Uuid().v4(),
+                                                            noTransaksi:
+                                                                transaksiId,
+                                                            nroObat: e.nroObat,
+                                                            qty: e.stok))
+                                                    .toList());
+                                        context.read<SetTransaksiBloc>().add(
+                                            SetTransaksi(
+                                                transaksiEntity:
+                                                    transaksiEntity));
+                                      });
+                                    },
+                                    child: (state is SetTransaksiLoading)
+                                        ? const CupertinoActivityIndicator()
+                                        : Text(
+                                            "Check Out",
+                                            style: headlineStyleText()
+                                                .copyWith(color: Colors.white),
+                                          ))),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
